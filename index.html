@@ -1,0 +1,332 @@
+<meta charset="utf-8">
+<title>받아쓰기 연습장</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;600;700&display=swap">
+<style>
+/* 왼쪽 설정 패널 + 오른쪽 A4 미리보기. 인쇄 시 패널은 숨김 */
+:root{
+  --paper:#ffffff; --desk:#eceee9; --ink:#23281f; --muted:#6b7266;
+  --line:#9aa096; --guide:#c9cdc4; --accent:#2f6b4f; --accent-soft:#e3efe8; --warn:#b4472e;
+  --trace:#c4c4c4;
+  --hand:'학교안심 받아쓰기 TTF L','학교안심 받아쓰기','학교안심받아쓰기','HakgyoansimBadasseugiTTF-L','Gowun Dodum',sans-serif;
+  --ui:'Noto Sans KR','Malgun Gothic',sans-serif;
+}
+*{box-sizing:border-box}
+html{color-scheme:light}
+html,body{margin:0;background:var(--desk);color:var(--ink);font-family:var(--ui);font-size:14px}
+.app{display:grid;grid-template-columns:320px 1fr;min-height:100vh}
+aside{background:var(--paper);border-right:1px solid #d9dcd4;padding:22px 20px;position:sticky;top:0;height:100vh;overflow:auto;display:flex;flex-direction:column;gap:18px}
+h1{font-family:var(--hand);font-size:26px;margin:0;font-weight:400;letter-spacing:.02em}
+.sub{color:var(--muted);font-size:12.5px;margin-top:2px}
+.grp{display:flex;flex-direction:column;gap:7px}
+.lbl{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.06em}
+.seg{display:flex;border:1px solid #cfd3ca;border-radius:8px;overflow:hidden}
+.seg button{flex:1;border:0;background:transparent;padding:9px 4px;font:inherit;font-size:13.5px;cursor:pointer;color:var(--ink)}
+.seg button+button{border-left:1px solid #cfd3ca}
+.seg button.on{background:var(--accent);color:#fff;font-weight:600}
+.seg button:focus-visible,.btn:focus-visible,textarea:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.row{display:flex;align-items:center;gap:10px}
+input[type=number]{width:70px;padding:7px 8px;border:1px solid #cfd3ca;border-radius:6px;font:inherit}
+input[type=range]{flex:1;accent-color:var(--accent)}
+textarea{width:100%;min-height:120px;resize:vertical;padding:9px;border:1px solid #cfd3ca;border-radius:8px;font:inherit;font-size:13.5px;line-height:1.6}
+.hint{font-size:12px;color:var(--muted);line-height:1.5}
+.hint b{color:var(--ink)}
+.warn{color:var(--warn)}
+.btns{display:flex;gap:8px;margin-top:auto;padding-top:8px}
+.btn{flex:1;padding:12px 8px;border-radius:8px;border:1px solid var(--accent);background:var(--paper);color:var(--accent);font:inherit;font-weight:700;font-size:14.5px;cursor:pointer}
+.btn.primary{background:var(--accent);color:#fff}
+.btn:hover{filter:brightness(.95)}
+.btn:disabled{opacity:.6;cursor:wait}
+.fontstat{font-size:12px;padding:8px 10px;border-radius:6px;background:var(--accent-soft);color:var(--accent);line-height:1.5}
+.fontstat.no{background:#f8ebe7;color:var(--warn)}
+.chk{display:flex;align-items:center;gap:8px;font-size:13.5px;cursor:pointer}
+.chk input{accent-color:var(--accent);width:16px;height:16px}
+
+main{padding:28px;display:flex;flex-direction:column;align-items:center;gap:28px;min-width:0}
+.pagewrap{box-shadow:0 2px 14px rgba(30,40,25,.18)}
+.page{width:210mm;height:297mm;background:#fff;padding:12mm 10mm 0;position:relative;overflow:hidden}
+.pno{position:absolute;bottom:6mm;right:10mm;font-size:9pt;color:#aaa}
+.sheet{display:grid;grid-template-columns:auto auto;border:0.3mm solid var(--line);width:max-content;margin:0 auto}
+.half{display:grid}
+.half+.half{border-left:0.3mm solid var(--line)}
+.line{display:flex;border-bottom:0.2mm solid var(--line)}
+.line:last-child{border-bottom:0}
+.box{flex:none;width:var(--bx);height:var(--bx);position:relative;display:flex;align-items:center;justify-content:center;border-left:0.15mm solid var(--line)}
+.box:first-child{border-left:0}
+.box.g::before,.box.g::after{content:"";position:absolute;pointer-events:none}
+.box.g::before{left:0;right:0;top:50%;border-top:0.15mm dashed var(--guide)}
+.box.g::after{top:0;bottom:0;left:50%;border-left:0.15mm dashed var(--guide)}
+.box span{font-family:var(--hand);font-size:calc(var(--bx) * 0.66);line-height:1;color:var(--trace);position:relative;z-index:1}
+.box.w{background:transparent}
+.box.sep{border-left:0.3mm solid var(--line)}
+
+@media (max-width:900px){
+  .app{grid-template-columns:1fr}
+  aside{position:static;height:auto;border-right:0;border-bottom:1px solid #d9dcd4}
+  main{padding:16px}
+}
+@page{size:A4;margin:0}
+@media print{
+  html,body{background:#fff}
+  aside{display:none}
+  .app{display:block}
+  main{padding:0;gap:0;display:block}
+  .pagewrap{box-shadow:none;zoom:1 !important;break-after:page}
+  .pagewrap:last-child{break-after:auto}
+  .box span{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<div class="app">
+<aside>
+  <div>
+    <h1>받아쓰기 연습장</h1>
+    <div class="sub">설정을 고르고 [인쇄하기]를 누르면 돼</div>
+  </div>
+
+  <div class="grp">
+    <div class="lbl">글자 수</div>
+    <div class="seg" id="len">
+      <button data-v="2">2글자</button><button data-v="3">3글자</button><button data-v="mix">섞어서</button>
+    </div>
+    <div class="hint" id="lenHint"></div>
+  </div>
+
+  <div class="grp">
+    <div class="lbl">단어 가져올 곳</div>
+    <div class="seg" id="src">
+      <button data-v="bank">기본 단어장</button><button data-v="mine">내 단어</button><button data-v="both">둘 다</button>
+    </div>
+    <div id="mineBox" class="grp">
+      <textarea id="mine" placeholder="띄어쓰기, 쉼표, 줄바꿈으로 구분해서 입력&#10;예) 사과 바나나 하늘 무지개"></textarea>
+      <div class="hint" id="mineHint"></div>
+    </div>
+  </div>
+
+  <div class="grp">
+    <div class="lbl">순서</div>
+    <div class="seg" id="order">
+      <button data-v="rand">무작위</button><button data-v="seq">순서대로</button>
+    </div>
+    <div class="row" id="startRow"><span class="hint">시작 번호</span><input type="number" id="start" min="1" value="1"></div>
+  </div>
+
+  <div class="grp">
+    <div class="lbl">칸 크기 (정사각형)</div>
+    <div class="seg" id="size">
+      <button data-v="big">큰 칸</button><button data-v="mid">보통</button><button data-v="small">작은 칸</button>
+    </div>
+    <div class="hint" id="sizeHint"></div>
+  </div>
+
+  <div class="grp">
+    <div class="lbl">장 수</div>
+    <div class="row"><input type="number" id="pages" min="1" max="20" value="1"><span class="hint">장 (장끼리 단어 안 겹침)</span></div>
+  </div>
+
+  <div class="grp">
+    <div class="lbl">회색 따라쓰기 글씨</div>
+    <div class="seg" id="trace">
+      <button data-v="1">첫 칸만</button><button data-v="all">모든 칸</button><button data-v="0">없음(시험)</button>
+    </div>
+    <div class="row"><span class="hint">연하게</span><input type="range" id="shade" min="120" max="230" value="196"><span class="hint">진하게</span></div>
+    <label class="chk"><input type="checkbox" id="guide" checked> 칸 안에 십자 안내선</label>
+  </div>
+
+  <div class="fontstat" id="fontstat">글꼴 확인 중…</div>
+
+  <div class="fontstat" id="note" hidden></div>
+  <div class="hint" id="printHint" hidden>[PDF 받기]를 누르면 지금 화면 그대로 PDF로 저장돼. 받은 PDF를 열어서 인쇄하면 돼.</div>
+  <div class="btns">
+    <button class="btn" id="shuffle">새로 섞기</button>
+    <button class="btn primary" id="print">인쇄하기</button>
+  </div>
+</aside>
+<main id="pages-out"></main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+const BANK = {"2": ["가게", "가구", "가방", "가슴", "가위", "가을", "가지", "가족", "간식", "갈비", "감기", "감자", "강물", "개미", "거울", "거미", "거북", "건물", "걸음", "겨울", "경찰", "계단", "계란", "고개", "고기", "고래", "고무", "고추", "공기", "공부", "공원", "공주", "공책", "과일", "과자", "교실", "구두", "구름", "국수", "그네", "그림", "그물", "극장", "글씨", "기린", "기름", "기차", "김밥", "김치", "까치", "깃발", "꼬리", "꽃잎", "꿀벌", "나무", "나비", "나라", "낙엽", "날개", "날씨", "남쪽", "냄비", "노래", "노을", "놀이", "농부", "누나", "눈물", "눈썹", "느낌", "늑대", "다리", "단추", "달걀", "달력", "당근", "대문", "도끼", "도시", "독서", "동굴", "동네", "동물", "동생", "돼지", "두부", "들판", "딸기", "땅콩", "떡국", "뚜껑", "라면", "리본", "마당", "마을", "마음", "만두", "망치", "매미", "머리", "먼지", "모래", "모자", "목욕", "무릎", "문어", "물감", "물개", "미소", "미술", "바다", "바람", "바위", "바지", "박수", "반지", "발톱", "방울", "배꼽", "배추", "버섯", "벌레", "베개", "벽돌", "별빛", "병원", "보리", "보물", "볼펜", "봄비", "부엌", "부채", "북쪽", "분수", "비누", "빗물", "빨래", "빵집", "사과", "사람", "사랑", "사슴", "사자", "사탕", "산책", "상자", "새벽", "색깔", "생일", "서랍", "선물", "설탕", "세수", "소금", "소리", "소풍", "손님", "송편", "수박", "수건", "숙제", "숲속", "시계", "시장", "신발", "썰매", "아기", "아빠", "아침", "악어", "안경", "야구", "약속", "양말", "어깨", "어른", "언니", "얼굴", "엄마", "여름", "연필", "열쇠", "엽서", "오리", "오이", "옷장", "우산", "우유", "운동", "의자", "이불", "이빨", "인형", "일기", "자두", "자석", "잠옷", "장갑", "장미", "접시", "정원", "조개", "종이", "주먹", "지갑", "지구", "지도", "지붕", "짝꿍", "참외", "창문", "책상", "천둥", "청소", "초록", "축구", "치마", "치즈", "친구", "칠판", "칫솔", "침대", "카드", "커튼", "키위", "타조", "태양", "토끼", "통닭", "튤립", "파도", "팽이", "편지", "포도", "풍선", "하늘", "학교", "한글", "햇빛", "호박", "혼자", "화분", "휴지", "가로", "가루", "가사", "가수", "가시", "가면", "각자", "간장", "갈대", "갈색", "감귤", "감동", "감사", "강당", "개울", "거리", "거실", "거인", "걱정", "건강", "검정", "게임", "겨자", "결석", "경기", "계절", "계획", "고모", "고민", "고향", "곡식", "곤충", "골목", "공룡", "공장", "공항", "과학", "관광", "광장", "괴물", "교문", "교장", "구멍", "구슬", "국기", "국물", "군인", "굴뚝", "궁전", "규칙", "그릇", "그늘", "근처", "기분", "기억", "기적", "기침", "기타", "기회", "길이", "김장", "깡통", "껍질", "꼭지", "꽁치", "꽃병", "꽃밭", "꾸중", "꿀물", "끈기", "나이", "낚시", "난로", "날짜", "남매", "남자", "낮잠", "냇물", "냉면", "노력", "녹색", "논밭", "높이", "눈치", "뉴스", "단풍", "달님", "달빛", "담요", "답장", "대답", "대추", "대화", "더위", "도둑", "도마", "도장", "도움", "돌담", "동시", "동요", "동화", "둥지", "뒷산", "들꽃", "등대", "등산", "딱지", "마녀", "마늘", "마술", "막대", "만화", "말씀", "먹이", "멍게", "메모", "메뉴", "멸치", "명절", "모기", "모양", "목표", "몸통", "묘기", "무게", "무늬", "무대", "문구", "문제", "물병", "미래", "미역", "바닥", "바늘", "반달", "반찬", "발레", "밥상", "방귀", "방석", "방학", "배달", "배우", "백조", "버스", "번개", "벌집", "벼루", "별명", "보라", "보름", "보석", "복도", "봉지", "부모", "부탁", "분홍", "불꽃", "비밀", "빛깔", "빨강", "뿌리", "사진", "사촌", "산골", "산타", "살구", "삼촌", "상추", "새우", "생각", "생선", "서점", "선녀", "세상", "소녀", "소년", "소식", "손톱", "솜씨", "송이", "수영", "수첩", "수학", "순서", "숫자", "습관", "시간", "시골", "시소", "식탁", "신문", "실수", "아들", "아이", "안개", "안녕", "야채", "약국", "양파", "어부", "얼음", "여우", "여행", "역사", "연극", "연못", "열매", "염소", "영화", "예절", "오빠", "오후", "온도", "왕자", "외국", "요리", "요정", "용기", "우물", "우주", "웃음", "위험", "유리", "은행", "음식", "음악", "이름", "이사", "이웃", "인사", "입술", "자랑", "자리", "자연", "작가", "잔디", "장난", "장마", "저녁", "전기", "전화", "절벽", "점심", "정답", "제비", "조각", "조카", "주인", "준비", "중간", "진주", "질문", "집게", "짐승", "짜장", "쪽지", "찌개", "차례", "창고", "채소", "책방", "처음", "천사", "철새", "체육", "초대", "초밥", "촛불", "추석", "축제", "출발", "충치", "취미", "치약", "칭찬", "카레", "코트", "콧물", "크기", "탁자", "탐정", "택시", "털실", "통장", "투명", "트럭", "특별", "파랑", "파리", "팔찌", "팥죽", "퍼즐", "편식", "평화", "포장", "폭포", "표정", "풀밭", "피리", "필통", "하마", "학생", "한복", "해님", "행복", "향기", "허리", "형님", "호수", "홍시", "화가", "환경", "활동", "흉내", "흰색", "희망", "가뭄", "가난", "가득", "각도", "간판", "갑옷", "강변", "강풍", "객실", "거품", "검사", "겉옷", "결과", "경치", "고장", "고집", "고생", "골프", "공간", "공연", "공포", "과거", "관객", "교통", "구석", "구조", "국가", "국어", "굴비", "귀족", "극복", "근육", "글자", "금빛", "기계", "기념", "기도", "기록", "기쁨", "기온", "긴장", "깃털", "꼴찌", "꽃게", "꽃집", "꿈길", "나팔", "남편", "내일", "냄새", "냉수", "너비", "넝쿨", "노인", "녹차", "논리", "농구", "농사", "누구", "눈길", "늦잠", "다락", "다짐", "단짝", "담장", "당번", "대왕", "대장", "덩굴", "도착", "독도", "동전", "뒷면", "들쥐", "등불", "딱풀", "땅굴", "떡잎", "마차", "막내", "만세", "매듭", "먹물", "명함", "목장", "목화", "몸집", "무역", "문장", "물결", "미로", "민속", "밀밭", "바깥", "박자", "반장", "반죽", "발견", "발명", "밤길", "밧줄", "방향", "배꽃", "뱃길", "버들", "번호", "벌판", "법칙", "벚꽃", "변신", "보통", "봄날", "봉투", "부리", "북극", "불빛", "비석", "빈칸", "빙수", "빨대", "뽕잎", "사냥", "사막", "사원", "사월", "산삼", "산호", "상처", "상품", "새싹", "새집", "생쥐", "서쪽", "석탑", "선장", "선택", "성벽", "세균", "소방", "소원", "속담", "손등", "솔잎", "수염", "수레", "수저", "순간", "술래", "숨결", "시인", "식물", "신호", "실내", "심장", "싸움", "쌀밥", "썰물", "쑥떡", "악기", "안방", "알밤", "암탉", "앞뜰", "야경", "양초", "언덕", "얼룩", "엄지", "여왕", "여울", "연기", "열기", "영웅", "옛날", "왕관", "외투", "요일", "용궁", "우정", "우표", "운명", "울음", "원반", "유령", "육지", "은빛", "음료", "의사", "이마", "이슬", "인내", "일꾼", "일출", "잎새", "자유", "작품", "잠수", "장군", "장작", "저울", "전설", "점토", "제주", "조끼", "조명", "졸업", "주방", "주차", "줄기", "지혜", "직업", "진흙", "찐빵", "참깨", "참새", "창밖", "천국", "철봉", "첫눈", "청춘", "초원", "촌장", "추위", "춤꾼", "친척", "침묵", "칼날", "콩떡", "큰길", "탈춤", "태풍", "통로", "퇴근", "판사", "폭죽", "표지", "풀숲", "피곤", "하품", "한강", "한낮", "한숨", "해녀", "해변", "햇살", "형제", "호두", "홍수", "화살", "황금", "회색", "횃불", "흙길", "힘껏", "곰탕", "과녁", "광고", "교회", "국화", "군밤", "남산", "낮달", "내복", "노루", "녹두", "눈꽃", "단비", "대게", "도령", "돌탑", "동해", "들깨", "등잔", "땅속", "떡집", "레몬", "로봇", "마루", "만남", "매화", "머루", "메밀", "모과", "목수", "목련", "문패", "물레", "바둑", "박쥐", "발등", "방아", "버선", "벼락", "복어", "볶음", "북어", "분필", "비단", "비옷", "사슬", "산새", "산길", "살림", "상어", "샘물", "서리", "석류", "선비", "소라", "소매", "수달", "수수", "숭늉", "시루", "쌀통", "씨름", "아씨", "앵두", "약초", "양떼", "어항", "연꽃", "열차", "오디", "왕비", "우비", "원님", "유자", "은하", "이삭", "자라", "장구", "장독", "젖소", "족자", "주걱", "죽순", "지게", "짚신", "참치", "창살", "처마", "초가", "추수", "콩밭", "토란", "퉁소", "표범", "풍년", "피자", "한옥", "해초", "호떡", "호미", "홍학", "화로", "황소", "흥부", "단오", "동지", "설날", "한식", "사또", "물총", "연잎", "솔개", "바퀴", "거위", "물소", "들소", "하루", "이틀", "사흘", "나흘", "닷새", "엿새", "이레", "열흘", "그믐", "정월", "섣달", "오늘", "어제", "모레", "글피", "새해", "연말", "주말", "평일", "휴일", "지금", "오전", "정오", "자정", "한밤"], "3": ["강아지", "고양이", "개구리", "거북이", "고구마", "곰돌이", "기러기", "까마귀", "꼭대기", "너구리", "나들이", "눈사람", "다람쥐", "달팽이", "도깨비", "도토리", "돌고래", "두꺼비", "두더지", "뒤꿈치", "뚝배기", "메뚜기", "모퉁이", "무지개", "물고기", "미나리", "바구니", "바닷가", "반딧불", "병아리", "복숭아", "부엉이", "비둘기", "비행기", "사다리", "사마귀", "소나기", "소나무", "소쿠리", "숟가락", "시냇물", "쓰레기", "아버지", "어머니", "앵무새", "오징어", "올빼미", "옥수수", "원숭이", "자동차", "자전거", "잠자리", "젓가락", "지렁이", "지우개", "지팡이", "참나무", "코끼리", "코뿔소", "콩나물", "토마토", "피아노", "할머니", "햄버거", "호랑이", "휘파람", "가오리", "갈매기", "개나리", "거미줄", "고드름", "고추장", "김치전", "꽃다발", "나뭇잎", "나침반", "낙하산", "냉장고", "노래방", "놀이터", "눈썰매", "다리미", "단무지", "대나무", "도서관", "도시락", "동물원", "된장국", "들국화", "떡볶이", "라디오", "마술사", "만두국", "머리띠", "목걸이", "목도리", "무궁화", "문방구", "물놀이", "물방울", "민들레", "밀가루", "바지락", "발자국", "밤송이", "백설기", "별자리", "보물섬", "봉숭아", "부침개", "불고기", "비빔밥", "빗방울", "빗자루", "뻐꾸기", "산딸기", "삼각형", "색종이", "선풍기", "세탁기", "소방관", "소방차", "손수건", "손가락", "수영장", "스케치", "신호등", "약수터", "양배추", "어린이", "엉덩이", "열기구", "엿가락", "오렌지", "오솔길", "옷걸이", "외갓집", "우체국", "우체통", "운동장", "운동화", "유치원", "은행잎", "음료수", "이야기", "인사말", "일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "자물쇠", "장난감", "재채기", "전화기", "정류장", "종소리", "주머니", "주전자", "줄넘기", "진달래", "책가방", "책갈피", "초콜릿", "축구공", "칠면조", "카메라", "컴퓨터", "크레용", "태권도", "통조림", "팔꿈치", "팥빙수", "편의점", "학용품", "한라산", "해수욕", "해적선", "홍당무", "화장실", "회오리", "흙먼지", "흰구름", "가랑비", "가시밭", "간호사", "감나무", "강냉이", "개울가", "거짓말", "건전지", "검정색", "게시판", "겨울잠", "경찰관", "경찰서", "고무줄", "골목길", "관람차", "교과서", "구급차", "구름빵", "굴렁쇠", "귀걸이", "그림책", "그림자", "글짓기", "금붕어", "기와집", "깍두기", "꽃게탕", "꿀단지", "나무꾼", "낚싯대", "남대문", "남학생", "냉동실", "노란색", "노랫말", "농구공", "누룽지", "눈동자", "다시마", "달나라", "달맞이", "닭갈비", "당나귀", "대통령", "도라지", "도마뱀", "도화지", "독수리", "돈가스", "돌다리", "동대문", "동화책", "두루미", "드레스", "딸기잼", "마라톤", "마법사", "마음씨", "막대기", "만화책", "망아지", "맹꽁이", "멍멍이", "메아리", "모기장", "모닥불", "모래성", "문어발", "미술관", "미역국", "바가지", "바느질", "바둑판", "박물관", "반바지", "발가락", "밤하늘", "배추밭", "뱀장어", "베짱이", "벼이삭", "별똥별", "보름달", "보자기", "볼링공", "봄나물", "부채춤", "북극곰", "분수대", "붕어빵", "빨간색", "사거리", "사진기", "산토끼", "새끼줄", "색연필", "생일날", "서랍장", "설거지", "성냥갑", "소금물", "손수레", "송아지", "수수깡", "수족관", "스웨터", "슬리퍼", "시골길", "시냇가", "식탁보", "실내화", "쌍둥이", "아랫집", "아침밥", "아파트", "악어새", "알사탕", "애벌레", "앞마당", "야구공", "야자수", "양치질", "얼룩말", "여름밤", "여우비", "연못가", "열대어", "영화관", "오리발", "오이지", "외나무", "요리사", "운동회", "원두막", "윗마을", "유리병", "유모차", "윷놀이", "은하수", "이발소", "인형극", "일기장", "입학식", "자장가", "작은집", "잔디밭", "장구춤", "장독대", "장미꽃", "저금통", "저녁밥", "전등불", "전봇대", "점심밥", "접시꽃", "조약돌", "졸업식", "종달새", "종이컵", "주사위", "주차장", "지하철", "진돗개", "짐수레", "참기름", "참새떼", "채송화", "책꽂이", "청소기", "초가집", "초록색", "축구장", "치마폭", "칼국수", "캥거루", "컵라면", "콧노래", "콩자반", "큰아빠", "탁구공", "태극기", "토끼풀", "통나무", "파랑새", "팽이채", "편지지", "포도알", "풀피리", "풍년가", "하늘색", "한가위", "할미꽃", "해돋이", "향나무", "호숫가", "호박꽃", "홍길동", "화살표", "활주로", "휴게소", "흰토끼", "가마솥", "감기약", "고등어", "고무신", "곰팡이", "공작새", "구슬비", "굼벵이", "귤껍질", "그물망", "기관차", "기찻길", "까치밥", "꼬리표", "꽃사슴", "꽃향기", "꾀꼬리", "나룻배", "나막신", "나비춤", "남동생", "내리막", "노른자", "눈송이", "눈싸움", "늦가을", "다듬이", "단풍잎", "달구지", "닭다리", "담쟁이", "대장간", "도우미", "돌멩이", "동치미", "뒷마당", "들기름", "등나무", "떡시루", "뜨개질", "마늘쫑", "마당쇠", "망둥어", "머리핀", "메밀꽃", "며느리", "모래밭", "모래알", "목욕탕", "무화과", "문고리", "바닷물", "바람꽃", "발바닥", "밤나무", "방망이", "방앗간", "배나무", "백두산", "벚나무", "별사탕", "보리밥", "보리차", "봄바람", "봉선화", "부뚜막", "북소리", "비눗물", "비단길", "비바람", "빈대떡", "빗소리", "빨랫줄", "빨래판", "뻥튀기", "사랑방", "사슴뿔", "산골짝", "산호초", "살구꽃", "삼계탕", "상추밭", "새둥지", "서울역", "석류알", "선생님", "섬마을", "솔방울", "솜사탕", "송사리", "수세미", "수제비", "시금치", "시래기", "실뭉치", "싸리문", "쌀가루", "쌀자루", "아궁이", "아기새", "아랫목", "안개꽃", "알림장", "애호박", "언덕길", "얼음물", "엿장수", "오누이", "오두막", "온돌방", "옹달샘", "왕만두", "우렁이", "우물가", "울타리", "위인전", "유채꽃", "은방울", "인절미", "자갈길", "잔칫날", "장작불", "저고리", "절구통", "조각배", "조랑말", "조롱박", "종이배", "주춧돌", "줄무늬", "진흙탕", "질경이", "짚방석", "찹쌀떡", "참외밭", "창포물", "첫걸음", "청국장", "초승달", "칡뿌리", "콩고물", "콩국수", "키다리", "토끼굴", "토담집", "팥고물", "팽나무", "포도밭", "풀무치", "풍뎅이", "할미새", "함박눈", "햅쌀밥", "호롱불", "호박엿", "화롯불", "흙담집"]};
+const $ = s => document.querySelector(s);
+const st = {size:'mid', len:'2', src:'bank', order:'rand', trace:'1', pages:1, start:1, shade:196, guide:true, mine:''};
+try{ Object.assign(st, JSON.parse(localStorage.getItem('dictation-settings')||'{}')); }catch(e){}
+const save = () => { try{ localStorage.setItem('dictation-settings', JSON.stringify(st)); }catch(e){} };
+
+let seed = Date.now(), lastWords = [];
+function rng(){ seed = (seed*1664525 + 1013904223) % 4294967296; return seed/4294967296; }
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(rng()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
+
+function myWords(){ return st.mine.split(/[\s,，、·]+/).map(w=>w.trim()).filter(Boolean); }
+function okLen(w){ const n=[...w].length; return st.len==='mix' ? (n===2||n===3) : n===Number(st.len); }
+
+function pool(){
+  const bank = st.len==='2' ? BANK['2'] : st.len==='3' ? BANK['3'] : BANK['2'].concat(BANK['3']);
+  const mine = myWords().filter(okLen);
+  const p = st.src==='bank' ? bank : st.src==='mine' ? mine : mine.concat(bank);
+  return [...new Set(p)];
+}
+
+function pick(){
+  const p = pool(), need = st.pages*geo().per;
+  if(!p.length) return [];
+  let out=[];
+  if(st.order==='rand'){ seed = seed || 1; while(out.length<need) out = out.concat(shuffle(p)); }
+  else { const s=Math.max(0,(st.start||1)-1); for(let i=0;i<need;i++) out.push(p[(s+i)%p.length]); }
+  return out.slice(0,need);
+}
+
+const BOXES = { '2':{big:6,mid:8,small:10}, '3':{big:6,mid:9,small:12}, 'mix':{big:6,mid:9,small:12} };
+function geo(){
+  const n = BOXES[st.len][st.size] || BOXES[st.len].mid;
+  const bx = 190/(2*n);              // 가로 190mm를 꽉 채우는 정사각형 한 변
+  const rows = Math.floor(272/bx);   // A4 세로에 들어가는 줄 수
+  return {n, bx, rows, per: rows*2};
+}
+
+function cells(word, mixMode){
+  const ch=[...(word||'')];
+  const n = geo().n;
+  const L = ch.length || (mixMode?3:Number(st.len));
+  const reps = Math.floor(n / L), out=[];
+  for(let i=0;i<n;i++){
+    const k=Math.floor(i/L), c = k<reps ? ch[i%L] : '';
+    out.push({ c: (word && c && (st.trace==='all' || (st.trace==='1' && k===0))) ? c : '',
+               g: st.guide && !(k===0 && st.trace!=='0'),
+               sep: i>0 && i%L===0 && k<=reps });
+  }
+  return out;
+}
+function lineHTML(word, mixMode){
+  return `<div class="line">${cells(word,mixMode).map(x=>`<div class="box${x.g?' g':''}${x.sep?' sep':''}">${x.c?`<span>${x.c}</span>`:''}</div>`).join('')}</div>`;
+}
+
+// PDF용: 한 장을 캔버스에 직접 그림 (200dpi)
+const HAND = getComputedStyle(document.documentElement).getPropertyValue('--hand').trim();
+function drawPage(words){
+  const DPI=200, k=DPI/25.4, W=Math.round(210*k), H=Math.round(297*k);
+  const cv=document.createElement('canvas'); cv.width=W; cv.height=H;
+  const x=cv.getContext('2d'); x.fillStyle='#fff'; x.fillRect(0,0,W,H);
+  const g=geo(), bx=g.bx*k, left=10*k, top=12*k, mix=st.len==='mix';
+  const tint=`rgb(${st.shade},${st.shade},${st.shade})`;
+  x.textAlign='center'; x.textBaseline='middle';
+  x.font=`${bx*0.66}px ${HAND}`;
+  for(let half=0;half<2;half++){
+    for(let r=0;r<g.rows;r++){
+      const cs=cells(words[half*g.rows+r],mix), y=top+r*bx;
+      cs.forEach((cl,i)=>{
+        const x0=left+(half*g.n+i)*bx;
+        if(cl.g){ x.save(); x.strokeStyle='#c9cdc4'; x.lineWidth=0.15*k; x.setLineDash([0.8*k,0.6*k]);
+          x.beginPath(); x.moveTo(x0,y+bx/2); x.lineTo(x0+bx,y+bx/2); x.moveTo(x0+bx/2,y); x.lineTo(x0+bx/2,y+bx); x.stroke(); x.restore(); }
+        if(cl.c){ x.fillStyle=tint; x.fillText(cl.c, x0+bx/2, y+bx/2+bx*0.03); }
+        x.strokeStyle='#9aa096'; x.lineWidth=(cl.sep?0.3:0.15)*k;
+        if(i>0){ x.beginPath(); x.moveTo(x0,y); x.lineTo(x0,y+bx); x.stroke(); }
+      });
+    }
+  }
+  // 가로줄 + 바깥 테두리 + 가운데 세로선
+  x.strokeStyle='#9aa096'; x.lineWidth=0.2*k;
+  for(let r=1;r<g.rows;r++){ x.beginPath(); x.moveTo(left,top+r*bx); x.lineTo(left+2*g.n*bx,top+r*bx); x.stroke(); }
+  x.lineWidth=0.3*k; x.strokeRect(left,top,2*g.n*bx,g.rows*bx);
+  x.beginPath(); x.moveTo(left+g.n*bx,top); x.lineTo(left+g.n*bx,top+g.rows*bx); x.stroke();
+  return cv;
+}
+async function makePDF(){
+  try{ await document.fonts.load(`40px ${HAND}`,'가'); await document.fonts.ready; }catch(e){}
+  const { jsPDF } = window.jspdf;
+  const pdf=new jsPDF({unit:'mm',format:'a4',compress:true});
+  const g=geo();
+  for(let p=0;p<st.pages;p++){
+    if(p) pdf.addPage();
+    const cv=drawPage(lastWords.slice(p*g.per,(p+1)*g.per));
+    pdf.addImage(cv.toDataURL('image/png'),'PNG',0,0,210,297,undefined,'FAST');
+  }
+  return pdf.output('blob');
+}
+
+function render(){
+  document.documentElement.style.setProperty('--bx', geo().bx.toFixed(3)+'mm');
+  document.documentElement.style.setProperty('--trace', `rgb(${st.shade},${st.shade},${st.shade})`);
+  const words = lastWords = pick(), out=$('#pages-out'); out.innerHTML='';
+  const mix = st.len==='mix';
+  for(let p=0;p<st.pages;p++){
+    const g = geo(), w = words.slice(p*g.per,(p+1)*g.per);
+    let L='',R='';
+    for(let r=0;r<g.rows;r++){ L+=lineHTML(w[r],mix); R+=lineHTML(w[g.rows+r],mix); }
+    const div=document.createElement('div'); div.className='pagewrap';
+    div.innerHTML=`<div class="page"><div class="sheet"><div class="half">${L}</div><div class="half">${R}</div></div>${st.pages>1?`<div class="pno">${p+1} / ${st.pages}</div>`:''}</div>`;
+    out.appendChild(div);
+  }
+  fit(); ui();
+}
+
+function fit(){
+  const main=$('#pages-out'); const avail = main.clientWidth - 32;
+  const px = 210*96/25.4; const z = Math.min(1, avail/px);
+  document.querySelectorAll('.pagewrap').forEach(e=>e.style.zoom = z);
+}
+
+function ui(){
+  for(const id of ['len','src','order','trace','size'])
+    document.querySelectorAll(`#${id} button`).forEach(b=>b.classList.toggle('on', b.dataset.v===String(st[id])));
+  { const g=geo(); $('#sizeHint').innerHTML = `한 칸 ${g.bx.toFixed(1)}mm · 한 장에 <b>${g.per}단어</b> (${g.rows}줄 × 2)`; }
+  $('#mineBox').hidden = st.src==='bank';
+  $('#startRow').hidden = st.order!=='seq';
+  const p = pool();
+  const lenTxt = st.len==='2'?'2글자':st.len==='3'?'3글자':'2·3글자';
+  $('#lenHint').innerHTML = `사용할 수 있는 ${lenTxt} 단어 <b>${p.length}개</b>` + ` · 한 줄에 ${Math.floor(geo().n/(st.len==='3'?3:2))}번 반복`;
+  const m = myWords(), bad = m.filter(w=>!okLen(w));
+  $('#mineHint').innerHTML = `입력 ${m.length}개` + (bad.length?` · <span class="warn">글자 수가 안 맞아 빠진 단어 ${bad.length}개: ${bad.slice(0,8).join(', ')}${bad.length>8?' …':''}</span>`:'');
+  if(!p.length) $('#lenHint').innerHTML += ` <span class="warn">— 단어가 없어. 내 단어를 입력하거나 기본 단어장을 골라줘</span>`;
+}
+
+function bindSeg(id, key){ document.querySelectorAll(`#${id} button`).forEach(b=>b.onclick=()=>{ st[key]=b.dataset.v; save(); render(); }); }
+bindSeg('len','len'); bindSeg('src','src'); bindSeg('order','order'); bindSeg('trace','trace'); bindSeg('size','size');
+$('#pages').oninput=e=>{ st.pages=Math.max(1,Math.min(20,parseInt(e.target.value)||1)); save(); render(); };
+$('#start').oninput=e=>{ st.start=Math.max(1,parseInt(e.target.value)||1); save(); render(); };
+$('#shade').oninput=e=>{ st.shade=+e.target.value; save(); document.documentElement.style.setProperty('--trace',`rgb(${st.shade},${st.shade},${st.shade})`); };
+$('#guide').onchange=e=>{ st.guide=e.target.checked; save(); render(); };
+let t; $('#mine').oninput=e=>{ st.mine=e.target.value; save(); clearTimeout(t); t=setTimeout(render,300); };
+$('#shuffle').onclick=()=>{ seed = Date.now() % 4294967296; render(); };
+const inFrame = (()=>{ try{ return window.self!==window.top; }catch(e){ return true; } })();
+const note = msg => { $('#note').hidden=!msg; $('#note').innerHTML=msg||''; };
+if(inFrame){
+  // 웹사이트(Claude 링크)에서는 인쇄 창을 못 띄워서 PDF로 받아서 인쇄
+  $('#print').textContent='PDF 받기';
+  $('#printHint').hidden=false;
+  $('#print').onclick=async()=>{
+    const btn=$('#print'); btn.disabled=true; btn.textContent='만드는 중…'; note('');
+    try{
+      if(!window.jspdf) throw {code:'nolib'};
+      const dl = await (window.claude?.use ? window.claude.use('downloads') : null);
+      if(!dl) throw {code:'unavailable'};
+      const blob = await makePDF();
+      const d=new Date(), name=`받아쓰기_${d.getMonth()+1}월${d.getDate()}일.pdf`;
+      await dl.save({filename:name, data:blob});
+      note('PDF를 받았어. 열어서 인쇄하면 돼 (배율 100% / 실제 크기).');
+    }catch(e){
+      if(e && e.code==='declined') note('');
+      else if(e && e.code==='rate_limited') note('저장 창이 이미 열려 있어. 잠시 후 다시 눌러줘.');
+      else note('이 화면에서는 PDF 저장이 안 돼. 바탕화면의 받아쓰기_연습장.html을 크롬으로 열어서 인쇄해줘.');
+    }finally{ btn.disabled=false; btn.textContent='PDF 받기'; }
+  };
+} else {
+  $('#print').onclick=()=>{ try{ window.print(); }catch(e){} };
+}
+window.addEventListener('resize', fit);
+
+$('#pages').value=st.pages; $('#start').value=st.start; $('#shade').value=st.shade; $('#guide').checked=st.guide; $('#mine').value=st.mine;
+
+// 학교안심 받아쓰기 글꼴이 PC에 깔려 있는지 확인
+(function(){
+  const c=document.createElement('canvas').getContext('2d'), txt='가나다라받아쓰기연습';
+  const names=['학교안심 받아쓰기 TTF L','학교안심 받아쓰기','학교안심받아쓰기','HakgyoansimBadasseugiTTF-L'];
+  c.font='40px monospace'; const base=c.measureText(txt).width;
+  c.font='40px serif'; const base2=c.measureText(txt).width;
+  const found = names.some(n=>{ c.font=`40px "${n}", monospace`; const a=c.measureText(txt).width; c.font=`40px "${n}", serif`; const b=c.measureText(txt).width; return a!==base || b!==base2; });
+  const el=$('#fontstat');
+  if(found){ el.textContent='✓ 학교안심 받아쓰기 글꼴로 출력돼'; }
+  else { el.className='fontstat no'; el.innerHTML='이 PC에 학교안심 받아쓰기 글꼴이 없어서 비슷한 글꼴로 보여줘. 원래 글꼴로 뽑으려면 글꼴을 설치하고 이 파일을 다시 열어줘.'; }
+})();
+
+render();
+</script>
